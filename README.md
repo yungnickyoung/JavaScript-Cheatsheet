@@ -49,9 +49,28 @@ The `__proto__` setter allows the `[[Prototype]]` of an object to be mutated. Th
 
 **Using `__proto__` is deprecated and highly discouraged**, in favor of `Object.getPrototypeOf` / `Object.setPrototypeOf`. Though still, setting the `[[Prototype]]` of an object is a slow operation that should be avoided if performance is a concern.
 
+### The Internal `[[Prototype]]` Property
+Before ECMAScript 2015, there wasn't officially a way to access an object's prototype directly &mdash; the "links" between the items in the chain are defined in an internal property, referred to as `[[Prototype]]` in the specification for the JS language.
+
+Most modern browsers, however, do offer the `__proto__` property which contain's the object's constructor's `prototype` object. Since ECMAScript 2015, you can access an object's prototype object indirectly via `Object.getPrototypeOf(obj)`.
+
 ### The Prototype Chain
+![Prototype Inheritance](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object_prototypes/mdn-graphics-person-person-object-2.png)
 
+When accessing a property or method on an object, we search for the desired property or method by traversing up the prototype chain, starting with the object itself. For example, what happens if we call a method on `person1`, that is actually defined in `Object.prototype`? For example:
 
+```js
+person1.valueOf()
+```
+
+`valueOf` returns the value of the object it is called on. What happens in this case is:
+1. The browser checks to see if `person1` has a `valueOf()` method available on it, as defined on its constructor `Person()`, and it doesn't.
+2. The browser checks to see if `person1`'s prototype object (`Person.prototype`) has a `valueOf()` method available on it and it doesn't.
+3. The browser checks to see if `person1`'s prototype object's prototype object (`Object.prototype`) has a `valueOf()` method, and it does. So the method is called!
+
+Note that methods and properties are **not** copied from one object to another in the prototype chain. They are *accessed by walking up the chain*.
+
+Note that the prototype chain is traversed only when *retrieving* properties. If properties are set or `delete`d directly on the object, the prototype chain is not traversed.
 
 <sup><sub>[▲ TOP](#table-of-contents)</sub></sup>
 
@@ -103,6 +122,26 @@ console.log(car2.color);   // 'original color'
 ```
 
 See [prototypes](#prototypes) for more information
+
+### `Object.create()`
+The `Object.create()` method creates a new object, using an existing object as the prototype of the newly created object.
+
+```js
+const person = {
+  isHuman: false,
+  printIntroduction: function() {
+    console.log(`My name is ${this.name}. Am I human? ${this.isHuman}`);
+  }
+};
+
+const me = Object.create(person);
+
+me.name = 'Matthew'; // "name" is a property set on "me", but not on "person"
+me.isHuman = true; // inherited properties can be overwritten
+
+me.printIntroduction();
+// expected output: "My name is Matthew. Am I human? true"
+```
 
 ### The `constructor` Property
 Every constructor function's `prototype` property itself contains a `constructor` property. The `constructor` property points to the original constructor function. 
