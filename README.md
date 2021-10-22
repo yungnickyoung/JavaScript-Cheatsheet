@@ -2,9 +2,11 @@
 - [Prototypes](#prototypes)
   - [The `prototype` Property](#the-prototype-property)
   - [The `__proto__` Property](#the-proto-property)
+  - [The Internal `[[Prototype]]` Property](#the-internal-prototype-property)
   - [The Prototype Chain](#the-prototype-chain)
 - [Constructing Objects](#constructing-objects)
   - [Using `new`](#using-new)
+  - [`Object.create()`](#objectcreate)
   - [The `constructor` Property](#the-constructor-property)
 
 <sup><sub>[▲ TOP](#table-of-contents)</sub></sup>
